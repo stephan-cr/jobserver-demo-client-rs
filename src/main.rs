@@ -15,9 +15,14 @@ use thiserror::Error;
 #[derive(Debug, PartialEq)]
 enum JobServerStyle<'a> {
     #[cfg(target_family = "unix")]
+    /// The Fifo job server style is supported since Make 4.4 and is a FIFO/named pipe.
     Fifo(&'a str),
+    /// Pipe is the older implementation, supported since ages. It
+    /// consists of two file descriptors, the first one is for reading
+    /// the second one for writing.
     Pipe(i32, i32),
     #[cfg(target_os = "windows")]
+    /// Sem is for Win32 semaphore
     Sem,
 }
 
@@ -32,7 +37,7 @@ enum ParseJobserverAuthError {
 // parse jobserver auth
 #[cfg(target_family = "unix")]
 fn parse_jobserver_auth(makeflags: &str) -> Result<JobServerStyle<'_>, ParseJobserverAuthError> {
-    // quick and dirty implementation, don't look closely!
+    // quick and dirty implementation, don't look too closely!
 
     if let Some(pos) = makeflags.rfind("--jobserver-auth=fifo:") {
         let pos_eq = pos + "--jobserver-auth=fifo:".as_bytes().len();
@@ -74,7 +79,7 @@ fn parse_jobserver_auth(makeflags: &str) -> Result<JobServerStyle<'_>, ParseJobs
 }
 
 #[cfg(target_os = "windows")]
-fn parse_jobserver_auth(makeflags: &str) -> Result<JobServerStyle<'_>, String> {
+fn parse_jobserver_auth(makeflags: &str) -> Result<JobServerStyle<'_>, ParseJobserverAuthError> {
     unimplemented!("windows semaphores");
 }
 
