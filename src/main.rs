@@ -99,11 +99,10 @@ fn main() -> anyhow::Result<()> {
                         .write(true)
                         .create_new(false)
                         .open(fifo_file)?;
-                    let mut token: [u8; 2] = [0; 2];
+                    let mut token: [u8; 1] = [0; 1];
                     // try to get the token
                     fifo.read_exact(&mut token).context("acquiring token")?;
                     println!("{}", char::from(token[0]));
-                    println!("{}", char::from(token[1]));
                     fifo.write_all(&token).context("releasing token")?;
                 }
                 JobServerStyle::Pipe(read_fd, write_fd) => {
