@@ -2,6 +2,9 @@
 //! job server. It tries to obtain a single token and gives it back
 //! immediately.
 
+#![warn(rust_2018_idioms)]
+#![warn(clippy::pedantic)]
+
 use std::{
     env,
     fs::File,
@@ -45,9 +48,8 @@ fn parse_jobserver_auth(makeflags: &str) -> Result<JobServerStyle<'_>, ParseJobs
             return Ok(JobServerStyle::Fifo(
                 &makeflags[pos_eq..(pos_eq + space_pos)],
             ));
-        } else {
-            return Ok(JobServerStyle::Fifo(&makeflags[pos_eq..]));
         }
+        return Ok(JobServerStyle::Fifo(&makeflags[pos_eq..]));
     }
 
     if let Some(pos) = makeflags.rfind("--jobserver-auth=") {
