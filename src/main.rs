@@ -43,7 +43,7 @@ fn parse_jobserver_auth(makeflags: &str) -> Result<JobServerStyle<'_>, ParseJobs
     // quick and dirty implementation, don't look too closely!
 
     if let Some(pos) = makeflags.rfind("--jobserver-auth=fifo:") {
-        let pos_eq = pos + "--jobserver-auth=fifo:".as_bytes().len();
+        let pos_eq = pos + "--jobserver-auth=fifo:".len();
         if let Some(space_pos) = makeflags[pos_eq..].find(' ') {
             return Ok(JobServerStyle::Fifo(
                 &makeflags[pos_eq..(pos_eq + space_pos)],
@@ -53,7 +53,7 @@ fn parse_jobserver_auth(makeflags: &str) -> Result<JobServerStyle<'_>, ParseJobs
     }
 
     if let Some(pos) = makeflags.rfind("--jobserver-auth=") {
-        let pos_eq = pos + "--jobserver-auth=".as_bytes().len();
+        let pos_eq = pos + "--jobserver-auth=".len();
         if makeflags[pos_eq..]
             .find(|c: char| c == '-' || c.is_ascii_digit())
             .is_some()
